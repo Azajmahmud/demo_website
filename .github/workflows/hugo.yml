@@ -2,7 +2,7 @@ name: Build & Deploy Hugo Site
 
 on:
   push:
-    branches: ["main", "hugo_build"]
+    branches: ["main"]
     paths:
       - '**.md'
       - 'content/**'
@@ -54,20 +54,23 @@ jobs:
       - name: Clear Hugo cache
         run: hugo mod clean
 
-      # 5️⃣ Install Hugo modules
+      # 5️⃣ Install and tidy Hugo modules
       - name: Install Hugo modules
         run: hugo mod get
 
-      # 6️⃣ Build Hugo site with branch-specific baseURL
+      - name: Tidy Hugo modules
+        run: hugo mod tidy
+
+      # 6️⃣ Build Hugo site with correct config and baseURL
       - name: Build Hugo site
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
           HUGO_ENVIRONMENT: production
         run: |
           if [ "${GITHUB_REF##*/}" = "main" ]; then
-            hugo --minify --baseURL="https://azajmahmud.github.io/demo_website/"
+            hugo --minify --config config/_default/config.toml --baseURL="https://azajmahmud.github.io/demo_website/"
           else
-            hugo --minify --baseURL="https://azajmahmud.github.io/demo_website/${GITHUB_REF##*/}/"
+            hugo --minify --config config/_default/config.toml --baseURL="https://azajmahmud.github.io/demo_website/${GITHUB_REF##*/}/"
           fi
 
       # 7️⃣ Upload Pages artifact
