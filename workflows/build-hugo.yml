@@ -21,11 +21,12 @@ jobs:
         with:
           go-version: '1.25.0'  
 
-      # 3️⃣ Install Hugo
+      # 3️⃣ Install Hugo (exact extended version)
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: 'latest'
+          hugo-version: '0.148.2'
+          extended: true
 
       # 4️⃣ Install Hugo modules
       - name: Install Hugo modules
