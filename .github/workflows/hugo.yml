@@ -2,7 +2,7 @@ name: Build & Deploy Hugo Site
 
 on:
   push:
-    branches: ["main", "hugo_build"]   # change/add other branches if needed
+    branches: ["main", "hugo_build"]   # branches to trigger workflow
   workflow_dispatch:
 
 permissions:
@@ -29,13 +29,13 @@ jobs:
         with:
           submodules: recursive
 
-      # 2️⃣ Setup Go (needed for Hugo modules)
+      # 2️⃣ Setup Go
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.25.0'
 
-      # 3️⃣ Install Hugo (exact extended version)
+      # 3️⃣ Install Hugo CLI (exact extended version)
       - name: Install Hugo CLI
         env:
           HUGO_VERSION: 0.148.2
@@ -43,7 +43,7 @@ jobs:
           wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
           && sudo dpkg -i ${{ runner.temp }}/hugo.deb
 
-      # 4️⃣ Clear Hugo cache (optional but avoids module issues)
+      # 4️⃣ Clear Hugo cache
       - name: Clear Hugo cache
         run: hugo mod clean
 
@@ -51,7 +51,7 @@ jobs:
       - name: Install Hugo modules
         run: hugo mod get
 
-      # 6️⃣ Build the site with minify and correct baseURL
+      # 6️⃣ Build the site with minify and baseURL
       - name: Build Hugo site
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
@@ -59,9 +59,9 @@ jobs:
         run: |
           hugo --minify --baseURL="https://azajmahmud.github.io/demo_website/"
 
-      # 7️⃣ Upload artifact (optional)
+      # 7️⃣ Upload artifact (updated to v4)
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hugo-public
           path: public/
