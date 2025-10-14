@@ -2,7 +2,7 @@ name: Build & Deploy Hugo Site
 
 on:
   push:
-    branches: ["main"]   # change/add other branches if needed
+    branches: ["main", "hugo_build"]   # change/add other branches if needed
   workflow_dispatch:
 
 permissions:
